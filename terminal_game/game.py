@@ -1,7 +1,27 @@
+import random
+
+
 SIZE = 5
 
+PLAYER_ICO = "🚶"
+TREE_ICO = "🌲"
+PRINCESS_ICO = "👸"
+SWORD_ICO = "🗡️"
+KEY_ICO = "🔑"
+DRAGON_ICO = "🐉"
+
+def get_random_place(forest:list)->list:
+    value = random.randint(0, SIZE*SIZE-1)
+    place = list(divmod(value, SIZE))
+    while forest[place[0]][place[1]] != TREE_ICO:
+        value = random.randint(0, SIZE * SIZE - 1)
+        place = list(divmod(value, SIZE))
+    return place
+
+
 # Створення порожнього лісу
-forest = [["." for _ in range(SIZE)] for _ in range(SIZE)]
+forest = [[TREE_ICO for _ in range(SIZE)] for _ in range(SIZE)]
+
 
 # Позиції
 player = [0, 0]
