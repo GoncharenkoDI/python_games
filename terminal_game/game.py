@@ -22,19 +22,17 @@ def get_random_place(forest:list)->list:
 # Створення порожнього лісу
 forest = [[TREE_ICO for _ in range(SIZE)] for _ in range(SIZE)]
 
-
-# Позиції
-player = [0, 0]
-dragon = [4, 4]
-princess = [2, 2]
-sword = [1, 3]
-key = [3, 1]
-
-# Розставляємо об'єкти
-forest[dragon[0]][dragon[1]] = "Д"
-forest[princess[0]][princess[1]] = "П"
-forest[sword[0]][sword[1]] = "М"
-forest[key[0]][key[1]] = "К"
+# визначаємо позиції та розставляємо об'єкти
+player = get_random_place(forest)
+forest[player[0]][player[1]] = PLAYER_ICO
+dragon = get_random_place(forest)
+forest[dragon[0]][dragon[1]] = DRAGON_ICO
+princess = get_random_place(forest)
+forest[princess[0]][princess[1]] = PRINCESS_ICO
+sword = get_random_place(forest)
+forest[sword[0]][sword[1]] = SWORD_ICO
+key = get_random_place(forest)
+forest[key[0]][key[1]] = KEY_ICO
 
 has_sword = False
 has_key = False
