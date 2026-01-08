@@ -10,25 +10,25 @@ KEY_ICO = "🔑"
 DRAGON_ICO = "🐉"
 
 
-def get_random_place(forest: list) -> list:
+def get_random_place(forest: list) -> tuple:
     value = random.randint(0, SIZE * SIZE - 1)
-    place = list(divmod(value, SIZE))
+    place = divmod(value, SIZE)
     while forest[place[0]][place[1]] != TREE_ICO:
         value = random.randint(0, SIZE * SIZE - 1)
-        place = list(divmod(value, SIZE))
+        place = divmod(value, SIZE)
     return place
 
 
-def is_border(place: list) -> bool:
+def is_border(place: tuple) -> bool:
     return place[0] == 0 or place[0] == SIZE - 1 or place[1] == 0 or place[1] == SIZE - 1
 
 
-def get_initial_player_place(forest: list) -> list:
+def get_initial_player_place(forest: list) -> tuple:
     places = []
     for row in range(SIZE):
         for col in range(SIZE):
-            if is_border([row, col]) and forest[row][col] == TREE_ICO:
-                places.append([row, col])
+            if is_border((row, col)) and forest[row][col] == TREE_ICO:
+                places.append((row, col))
     return random.choice(places)
 
 
@@ -60,19 +60,18 @@ def show_forest():
     print()
 
 
-def move_player(direction):
-    if direction == "w":
-        player[0] -= 1
-    elif direction == "s":
-        player[0] += 1
-    elif direction == "a":
-        player[1] -= 1
-    elif direction == "d":
-        player[1] += 1
+def move_player(direction: str, old_place)->tuple:
+    directions_action = {
+        "w": lambda old_place: (old_place[0] - 1, old_place[1]),
+        "s": lambda old_place: (old_place[0] + 1, old_place[1]),
+        "a": lambda old_place: (old_place[0], old_place[1] - 1),
+        "d": lambda old_place: (old_place[0], old_place[1] + 1)
+    }
+    return directions_action[direction](old_place)
 
 
-def inside_forest():
-    return 0 <= player[0] < SIZE and 0 <= player[1] < SIZE
+def inside_forest(place: tuple) -> bool:
+    return 0 <= place[0] < SIZE and 0 <= place[1] < SIZE
 
 
 print("🌲 Ви зайшли в ліс")
@@ -81,10 +80,12 @@ print("Керування: w/a/s/d")
 while True:
     show_forest()
     move = input("Ваш хід: ").lower()
-    move_player(move)
-
+    old_place = player
+    player = move_player(move, old_place)
+    forest[old_place[0]][old_place[1]] = TREE_ICO
+    forest[player[0]][player[1]] = PLAYER_ICO
     # Вийшов з лісу
-    if not inside_forest():
+    if not inside_forest(player):
         if has_princess:
             print("🏆 Ви вийшли з лісу з Принцесою! Перемога!")
         else:
@@ -93,25 +94,25 @@ while True:
 
     cell = forest[player[0]][player[1]]
 
-    if cell == "К":
+    if cell == KEY_ICO:
         has_key = True
-        forest[player[0]][player[1]] = "."
+        forest[player[0]][player[1]] = TREE_ICO
         print("🔑 Ви знайшли ключ!")
 
-    elif cell == "М":
+    elif cell == SWORD_ICO:
         has_sword = True
-        forest[player[0]][player[1]] = "."
+        forest[player[0]][player[1]] = TREE_ICO
         print("🗡️ Ви знайшли меч!")
 
-    elif cell == "П":
+    elif cell == PRINCESS_ICO:
         has_princess = True
-        forest[player[0]][player[1]] = "."
+        forest[player[0]][player[1]] = TREE_ICO
         print("👸 Ви забрали Принцесу!")
 
-    elif cell == "Д":
+    elif cell == DRAGON_ICO:
         if has_sword and not has_princess:
             print("🐉 Ви вбили Дракона!")
-            forest[player[0]][player[1]] = "."
+            forest[player[0]][player[1]] = TREE_ICO
         else:
             print("💀 Дракон вас з'їв. Гра закінчена.")
             break
