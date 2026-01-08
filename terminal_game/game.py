@@ -54,6 +54,12 @@ def inside_forest(place: tuple) -> bool:
     return 0 <= place[0] < SIZE and 0 <= place[1] < SIZE
 
 
+def place_forest_item(forest: list[list[str]], item_ico: str ):
+    # УВАГА!!! Щоб не плодити великі структури змінюємо наявний список forest
+    place = get_random_place(forest)
+    forest[place[0]][place[1]] = item_ico
+
+
 if __name__ == '__main__':
 
     # Створення порожнього лісу
@@ -62,19 +68,14 @@ if __name__ == '__main__':
     # визначаємо позиції та розставляємо об'єкти
     player = get_initial_player_place(forest)
     forest[player[0]][player[1]] = PLAYER_ICO
-    dragon = get_random_place(forest)
-    forest[dragon[0]][dragon[1]] = DRAGON_ICO
-    princess = get_random_place(forest)
-    forest[princess[0]][princess[1]] = PRINCESS_ICO
-    sword = get_random_place(forest)
-    forest[sword[0]][sword[1]] = SWORD_ICO
-    key = get_random_place(forest)
-    forest[key[0]][key[1]] = KEY_ICO
+    place_forest_item(forest, DRAGON_ICO)
+    place_forest_item(forest, PRINCESS_ICO)
+    place_forest_item(forest, SWORD_ICO)
+    place_forest_item(forest, KEY_ICO)
 
     has_sword = False
     has_key = False
     has_princess = False
-
 
     print("🌲 Ви зайшли в ліс")
     print("Керування: w/a/s/d")
