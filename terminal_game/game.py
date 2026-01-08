@@ -32,26 +32,6 @@ def get_initial_player_place(forest: list) -> tuple:
     return random.choice(places)
 
 
-# Створення порожнього лісу
-forest = [[TREE_ICO for _ in range(SIZE)] for _ in range(SIZE)]
-
-# визначаємо позиції та розставляємо об'єкти
-player = get_initial_player_place(forest)
-forest[player[0]][player[1]] = PLAYER_ICO
-dragon = get_random_place(forest)
-forest[dragon[0]][dragon[1]] = DRAGON_ICO
-princess = get_random_place(forest)
-forest[princess[0]][princess[1]] = PRINCESS_ICO
-sword = get_random_place(forest)
-forest[sword[0]][sword[1]] = SWORD_ICO
-key = get_random_place(forest)
-forest[key[0]][key[1]] = KEY_ICO
-
-has_sword = False
-has_key = False
-has_princess = False
-
-
 def show_forest(forest:list[list[str]]):
     for i in range(SIZE):
         for j in range(SIZE):
@@ -74,47 +54,69 @@ def inside_forest(place: tuple) -> bool:
     return 0 <= place[0] < SIZE and 0 <= place[1] < SIZE
 
 
-print("🌲 Ви зайшли в ліс")
-print("Керування: w/a/s/d")
+if __name__ == '__main__':
 
-while True:
-    show_forest(forest)
-    move = input("Ваш хід: ").lower()
-    old_place = player
-    player = move_player(move, old_place)
-    # Вийшов з лісу
-    if not inside_forest(player):
-        if has_princess:
-            print("🏆 Ви вийшли з лісу з Принцесою! Перемога!")
-        else:
-            print("❌ Ви вийшли з лісу без Принцеси. Поразка.")
-        break
+    # Створення порожнього лісу
+    forest = [[TREE_ICO for _ in range(SIZE)] for _ in range(SIZE)]
 
-    cell = forest[player[0]][player[1]]
+    # визначаємо позиції та розставляємо об'єкти
+    player = get_initial_player_place(forest)
+    forest[player[0]][player[1]] = PLAYER_ICO
+    dragon = get_random_place(forest)
+    forest[dragon[0]][dragon[1]] = DRAGON_ICO
+    princess = get_random_place(forest)
+    forest[princess[0]][princess[1]] = PRINCESS_ICO
+    sword = get_random_place(forest)
+    forest[sword[0]][sword[1]] = SWORD_ICO
+    key = get_random_place(forest)
+    forest[key[0]][key[1]] = KEY_ICO
 
-    if cell == KEY_ICO:
-        has_key = True
-        forest[player[0]][player[1]] = TREE_ICO
-        print("🔑 Ви знайшли ключ!")
+    has_sword = False
+    has_key = False
+    has_princess = False
 
-    elif cell == SWORD_ICO:
-        has_sword = True
-        forest[player[0]][player[1]] = TREE_ICO
-        print("🗡️ Ви знайшли меч!")
 
-    elif cell == PRINCESS_ICO:
-        has_princess = True
-        forest[player[0]][player[1]] = TREE_ICO
-        print("👸 Ви забрали Принцесу!")
+    print("🌲 Ви зайшли в ліс")
+    print("Керування: w/a/s/d")
 
-    elif cell == DRAGON_ICO:
-        if has_sword and not has_princess:
-            print("🐉 Ви вбили Дракона!")
-            forest[player[0]][player[1]] = TREE_ICO
-        else:
-            print("💀 Дракон вас з'їв. Гра закінчена.")
+    while True:
+        show_forest(forest)
+        move = input("Ваш хід: ").lower()
+        old_place = player
+        player = move_player(move, old_place)
+        # Вийшов з лісу
+        if not inside_forest(player):
+            if has_princess:
+                print("🏆 Ви вийшли з лісу з Принцесою! Перемога!")
+            else:
+                print("❌ Ви вийшли з лісу без Принцеси. Поразка.")
             break
 
-    forest[old_place[0]][old_place[1]] = TREE_ICO
-    forest[player[0]][player[1]] = PLAYER_ICO
+        cell = forest[player[0]][player[1]]
+
+        if cell == KEY_ICO:
+            has_key = True
+            forest[player[0]][player[1]] = TREE_ICO
+            print("🔑 Ви знайшли ключ!")
+
+        elif cell == SWORD_ICO:
+            has_sword = True
+            forest[player[0]][player[1]] = TREE_ICO
+            print("🗡️ Ви знайшли меч!")
+
+        elif cell == PRINCESS_ICO:
+            has_princess = True
+            forest[player[0]][player[1]] = TREE_ICO
+            print("👸 Ви забрали Принцесу!")
+
+        elif cell == DRAGON_ICO:
+            if has_sword and not has_princess:
+                print("🐉 Ви вбили Дракона!")
+                forest[player[0]][player[1]] = TREE_ICO
+            else:
+                print("💀 Дракон вас з'їв. Гра закінчена.")
+                break
+
+        forest[old_place[0]][old_place[1]] = TREE_ICO
+        forest[player[0]][player[1]] = PLAYER_ICO
 
