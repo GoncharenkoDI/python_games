@@ -52,7 +52,7 @@ has_key = False
 has_princess = False
 
 
-def show_forest():
+def show_forest(forest:list[list[str]]):
     for i in range(SIZE):
         for j in range(SIZE):
             print(forest[i][j], end=" ")
@@ -78,12 +78,10 @@ print("🌲 Ви зайшли в ліс")
 print("Керування: w/a/s/d")
 
 while True:
-    show_forest()
+    show_forest(forest)
     move = input("Ваш хід: ").lower()
     old_place = player
     player = move_player(move, old_place)
-    forest[old_place[0]][old_place[1]] = TREE_ICO
-    forest[player[0]][player[1]] = PLAYER_ICO
     # Вийшов з лісу
     if not inside_forest(player):
         if has_princess:
@@ -116,3 +114,7 @@ while True:
         else:
             print("💀 Дракон вас з'їв. Гра закінчена.")
             break
+
+    forest[old_place[0]][old_place[1]] = TREE_ICO
+    forest[player[0]][player[1]] = PLAYER_ICO
+
