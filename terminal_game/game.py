@@ -105,7 +105,7 @@ if __name__ == '__main__':
             forest[player[0]][player[1]] = TREE_ICO
             print("🗡️ Ви знайшли меч!")
 
-        elif cell == PRINCESS_ICO:
+        elif cell == PRINCESS_ICO and has_key:
             has_princess = True
             forest[player[0]][player[1]] = TREE_ICO
             print("👸 Ви забрали Принцесу!")
