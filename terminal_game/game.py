@@ -10,12 +10,10 @@ KEY_ICO = "🔑"
 DRAGON_ICO = "🐉"
 
 
-def get_random_place(forest: list) -> tuple:
-    value = random.randint(0, SIZE * SIZE - 1)
-    place = divmod(value, SIZE)
-    while forest[place[0]][place[1]] != TREE_ICO:
-        value = random.randint(0, SIZE * SIZE - 1)
-        place = divmod(value, SIZE)
+def get_random_place(occupied_seats: dict[tuple, str]) -> tuple:
+    place = divmod(random.randint(0, SIZE * SIZE - 1), SIZE)
+    while place in occupied_seats:
+        place = divmod(random.randint(0, SIZE * SIZE - 1), SIZE)
     return place
 
 
@@ -23,19 +21,21 @@ def is_border(place: tuple) -> bool:
     return place[0] == 0 or place[0] == SIZE - 1 or place[1] == 0 or place[1] == SIZE - 1
 
 
-def get_initial_player_place(forest: list) -> tuple:
+def get_initial_player_place(occupied_seats: dict[tuple, str]) -> tuple:
+    """ отримання початкової позиції гравця в лісі (повинна бути на границі лісу та не зайнята"""
     places = []
     for row in range(SIZE):
         for col in range(SIZE):
-            if is_border((row, col)) and forest[row][col] == TREE_ICO:
-                places.append((row, col))
+            place = (row, col)
+            if is_border(place) and place not in occupied_seats:
+                places.append(place)
     return random.choice(places)
 
 
-def show_forest(forest:list[list[str]]):
-    for i in range(SIZE):
-        for j in range(SIZE):
-            print(forest[i][j], end=" ")
+def show_forest(occupied_seats: dict[tuple, str]):
+    for row in range(SIZE):
+        for column in range(SIZE):
+            print(occupied_seats.get((row,column),TREE_ICO), end=" ")
         print()
     print()
 
@@ -54,35 +54,38 @@ def inside_forest(place: tuple) -> bool:
     return 0 <= place[0] < SIZE and 0 <= place[1] < SIZE
 
 
-def place_forest_item(forest: list[list[str]], item_ico: str ):
-    # УВАГА!!! Щоб не плодити великі структури змінюємо наявний список forest
-    place = get_random_place(forest)
-    forest[place[0]][place[1]] = item_ico
+def place_forest_item(occupied_seats: dict[tuple, str], item_ico: str )->dict[tuple, str]:
+    result = occupied_seats.copy()
+    place = get_random_place(result)
+    result[place] = item_ico
+    return result
 
 
 if __name__ == '__main__':
 
     # Створення порожнього лісу
-    forest = [[TREE_ICO for _ in range(SIZE)] for _ in range(SIZE)]
-
+    occupied_seats:dict[tuple[int], str] =  {}
+    cell: str = TREE_ICO
     # визначаємо позиції та розставляємо об'єкти
-    player = get_initial_player_place(forest)
-    forest[player[0]][player[1]] = PLAYER_ICO
-    place_forest_item(forest, DRAGON_ICO)
-    place_forest_item(forest, PRINCESS_ICO)
-    place_forest_item(forest, SWORD_ICO)
-    place_forest_item(forest, KEY_ICO)
+    player: tuple[int] = get_initial_player_place(occupied_seats)
+    occupied_seats[player] = PLAYER_ICO
+    occupied_seats = place_forest_item(occupied_seats, DRAGON_ICO)
+    occupied_seats = place_forest_item(occupied_seats, PRINCESS_ICO)
+    occupied_seats = place_forest_item(occupied_seats, SWORD_ICO)
+    occupied_seats = place_forest_item(occupied_seats, KEY_ICO)
 
-    has_sword = False
-    has_key = False
-    has_princess = False
+    has_sword: bool = False
+    has_key: bool = False
+    has_princess: bool = False
 
     print("🌲 Ви зайшли в ліс")
     print("Керування: w/a/s/d")
 
     while True:
-        show_forest(forest)
-        move = input("Ваш хід: ").lower()
+        show_forest(occupied_seats)
+        move:str = input("Ваш хід: ").lower()
+        while move not in ("w", "a", "s", "d"):
+            move = input("Ваш хід: ").lower()
         old_place = player
         player = move_player(move, old_place)
         # Вийшов з лісу
@@ -93,31 +96,32 @@ if __name__ == '__main__':
                 print("❌ Ви вийшли з лісу без Принцеси. Поразка.")
             break
 
-        cell = forest[player[0]][player[1]]
+        if cell == PRINCESS_ICO and not has_princess:
+            occupied_seats[old_place] = PRINCESS_ICO
+        else:
+            del occupied_seats[old_place]
+
+        cell = occupied_seats.get(player)
+        occupied_seats[player] = PLAYER_ICO
 
         if cell == KEY_ICO:
             has_key = True
-            forest[player[0]][player[1]] = TREE_ICO
             print("🔑 Ви знайшли ключ!")
 
         elif cell == SWORD_ICO:
             has_sword = True
-            forest[player[0]][player[1]] = TREE_ICO
             print("🗡️ Ви знайшли меч!")
 
         elif cell == PRINCESS_ICO and has_key:
             has_princess = True
-            forest[player[0]][player[1]] = TREE_ICO
             print("👸 Ви забрали Принцесу!")
 
         elif cell == DRAGON_ICO:
             if has_sword and not has_princess:
                 print("🐉 Ви вбили Дракона!")
-                forest[player[0]][player[1]] = TREE_ICO
             else:
                 print("💀 Дракон вас з'їв. Гра закінчена.")
                 break
 
-        forest[old_place[0]][old_place[1]] = TREE_ICO
-        forest[player[0]][player[1]] = PLAYER_ICO
+
 
