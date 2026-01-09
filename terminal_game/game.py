@@ -1,4 +1,5 @@
 import random
+import os
 
 SIZE = 5
 
@@ -54,12 +55,20 @@ def inside_forest(place: tuple) -> bool:
     return 0 <= place[0] < SIZE and 0 <= place[1] < SIZE
 
 
-def place_forest_item(occupied_seats: dict[tuple, str], item_ico: str )->dict[tuple, str]:
-    result = occupied_seats.copy()
-    place = get_random_place(result)
-    result[place] = item_ico
-    return result
+# def place_forest_item(occupied_seats: dict[tuple, str], item_ico: str )->dict[tuple, str]:
+#     result = occupied_seats.copy()
+#     place = get_random_place(result)
+#     result[place] = item_ico
+#     return result
 
+
+def show_player_info(message: str, has_sword: bool, has_princess: bool, has_key: bool):
+    print(message)
+    print("У вас є: ", end='')
+    if has_sword: print(f" {SWORD_ICO} - меч", end='')
+    if has_key: print(f" {KEY_ICO} - ключ", end='')
+    if has_princess: print(f" {PRINCESS_ICO} - принцеса", end='')
+    print()
 
 if __name__ == '__main__':
 
@@ -69,20 +78,23 @@ if __name__ == '__main__':
     # визначаємо позиції та розставляємо об'єкти
     player: tuple[int] = get_initial_player_place(occupied_seats)
     occupied_seats[player] = PLAYER_ICO
-    occupied_seats = place_forest_item(occupied_seats, DRAGON_ICO)
-    occupied_seats = place_forest_item(occupied_seats, PRINCESS_ICO)
-    occupied_seats = place_forest_item(occupied_seats, SWORD_ICO)
-    occupied_seats = place_forest_item(occupied_seats, KEY_ICO)
+    occupied_seats[get_random_place(occupied_seats)] = DRAGON_ICO
+    occupied_seats[get_random_place(occupied_seats)] = PRINCESS_ICO
+    occupied_seats[get_random_place(occupied_seats)] = SWORD_ICO
+    occupied_seats[get_random_place(occupied_seats)] = KEY_ICO
 
     has_sword: bool = False
     has_key: bool = False
     has_princess: bool = False
 
-    print("🌲 Ви зайшли в ліс")
-    print("Керування: w/a/s/d")
+    message: str = "🌲 Ви зайшли в ліс"
 
     while True:
+        os.system("cls")
+        show_player_info(message, has_sword, has_princess, has_key)
+        message = ''
         show_forest(occupied_seats)
+        print("Керування: w/a/s/d")
         move:str = input("Ваш хід: ").lower()
         while move not in ("w", "a", "s", "d"):
             move = input("Ваш хід: ").lower()
@@ -90,10 +102,6 @@ if __name__ == '__main__':
         player = move_player(move, old_place)
         # Вийшов з лісу
         if not inside_forest(player):
-            if has_princess:
-                print("🏆 Ви вийшли з лісу з Принцесою! Перемога!")
-            else:
-                print("❌ Ви вийшли з лісу без Принцеси. Поразка.")
             break
 
         if cell == PRINCESS_ICO and not has_princess:
@@ -106,22 +114,29 @@ if __name__ == '__main__':
 
         if cell == KEY_ICO:
             has_key = True
-            print("🔑 Ви знайшли ключ!")
+            message = "🔑 Ви знайшли ключ!"
 
         elif cell == SWORD_ICO:
             has_sword = True
-            print("🗡️ Ви знайшли меч!")
+            message = "🗡️ Ви знайшли меч!"
 
         elif cell == PRINCESS_ICO and has_key:
             has_princess = True
-            print("👸 Ви забрали Принцесу!")
+            message = "👸 Ви забрали Принцесу!"
 
         elif cell == DRAGON_ICO:
             if has_sword and not has_princess:
-                print("🐉 Ви вбили Дракона!")
+                message = "🐉 Ви вбили Дракона!"
             else:
-                print("💀 Дракон вас з'їв. Гра закінчена.")
                 break
 
 
+    os.system("cls")
+    if cell == DRAGON_ICO:
+        print("💀 Дракон вас з'їв. Гра закінчена.")
+        exit(0)
+    if has_princess:
+        print("🏆 Ви вийшли з лісу з Принцесою! Перемога!")
+    else:
+        print("❌ Ви вийшли з лісу без Принцеси. Поразка.")
 
