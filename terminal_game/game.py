@@ -112,23 +112,22 @@ if __name__ == '__main__':
         cell = occupied_seats.get(player)
         occupied_seats[player] = PLAYER_ICO
 
-        if cell == KEY_ICO:
-            has_key = True
-            message = "🔑 Ви знайшли ключ!"
-
-        elif cell == SWORD_ICO:
-            has_sword = True
-            message = "🗡️ Ви знайшли меч!"
-
-        elif cell == PRINCESS_ICO and has_key:
-            has_princess = True
-            message = "👸 Ви забрали Принцесу!"
-
-        elif cell == DRAGON_ICO:
-            if has_sword and not has_princess:
-                message = "🐉 Ви вбили Дракона!"
-            else:
-                break
+        match cell:
+            case "🔑":
+                has_key = True
+                message = "🔑 Ви знайшли ключ!"
+            case "🗡️":
+                has_sword = True
+                message = "🗡️ Ви знайшли меч!"
+            case "👸":
+                if has_key:
+                    has_princess = True
+                    message = "👸 Ви забрали Принцесу!"
+            case "🐉":
+                if has_sword and not has_princess:
+                    message = "🐉 Ви вбили Дракона!"
+                else:
+                    break
 
 
     os.system("cls")
