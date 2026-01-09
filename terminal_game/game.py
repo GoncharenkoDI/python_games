@@ -72,10 +72,10 @@ def show_player_info(message: str, has_sword: bool, has_princess: bool, has_key:
 
 if __name__ == '__main__':
 
-    # Створення порожнього лісу
+    # Створення порожнього лісу вірніше список зайнятих місць
     occupied_seats:dict[tuple[int], str] =  {}
     cell: str = TREE_ICO
-    # визначаємо позиції та розставляємо об'єкти
+    # визначаємо позиції та розставляємо об'єкти (займаємо місця)
     player: tuple[int] = get_initial_player_place(occupied_seats)
     occupied_seats[player] = PLAYER_ICO
     occupied_seats[get_random_place(occupied_seats)] = DRAGON_ICO
@@ -100,14 +100,14 @@ if __name__ == '__main__':
             move = input("Ваш хід: ").lower()
         old_place = player
         player = move_player(move, old_place)
-        # Вийшов з лісу
-        if not inside_forest(player):
+
+        if not inside_forest(player): # Вийшов з лісу
             break
 
-        if cell == PRINCESS_ICO and not has_princess:
+        if cell == PRINCESS_ICO and not has_princess: # був на місті принцеси і не забрав її
             occupied_seats[old_place] = PRINCESS_ICO
         else:
-            del occupied_seats[old_place]
+            del occupied_seats[old_place] # звільняємо місце
 
         cell = occupied_seats.get(player)
         occupied_seats[player] = PLAYER_ICO
