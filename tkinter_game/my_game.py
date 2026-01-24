@@ -27,11 +27,9 @@ tk.geometry(MAIN_WINDOWS_GEOMETRY)
 
 game_panel = Frame(tk, height=FOREST_SIZE, width=FOREST_SIZE)
 game_panel.place(x=0, y=0)
-tools_panel = Frame(tk, height=FOREST_SIZE, width=TOOLS_PANEL_WITH, bg="yellow")
-tools_panel.place(x=FOREST_SIZE, y=0)
 
-btn_bar = Frame(tools_panel, height=BTN_BAR_HEIGHT, width=TOOLS_PANEL_WITH, bg="red", padx=8, pady=5)
-btn_bar.place(x=0, y=0, width=TOOLS_PANEL_WITH, height=BTN_BAR_HEIGHT)
+btn_bar = Frame(tk, height=BTN_BAR_HEIGHT, width=TOOLS_PANEL_WITH, bg="red", padx=8, pady=5)
+btn_bar.place(x=FOREST_SIZE, y=0, width=TOOLS_PANEL_WITH, height=BTN_BAR_HEIGHT)
 
 btn_start = Button(btn_bar, text="Розпочати гру")
 btn_start.grid(row=0, column=0, padx=2, pady=5)
@@ -39,8 +37,8 @@ btn_start.grid(row=0, column=0, padx=2, pady=5)
 btn_stop = Button(btn_bar, text="Завершити гру")
 btn_stop.grid(row=0, column=1, padx=2, pady=5)
 
-info_bar = Frame(tools_panel, height=INFO_BAR_HEIGHT, width=TOOLS_PANEL_WITH, bg="blue", padx=8, pady=5)
-info_bar.place(x=0, y=BTN_BAR_HEIGHT, width=TOOLS_PANEL_WITH, height=INFO_BAR_HEIGHT)
+info_bar = Frame(tk, height=INFO_BAR_HEIGHT, width=TOOLS_PANEL_WITH, bg="blue", padx=8, pady=5)
+info_bar.place(x=FOREST_SIZE, y=BTN_BAR_HEIGHT, width=TOOLS_PANEL_WITH, height=INFO_BAR_HEIGHT)
 
 player_info = Label(info_bar, text="Ви зайшли в ліс. В лісі ви можете зустріти дракона. Бережіть себе.",
                     wraplength=TOOLS_PANEL_WITH - 16)
